@@ -1,0 +1,71 @@
+NAME
+    Devel::Local - Use development versions of other modules
+
+SYNOPSIS
+        > export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
+        > export PATH=`perl -MDevel::Local=PATH`
+
+DESCRIPTION
+    Sometimes when you are developing software there can several module code
+    repositories involved. This module lets you specify which repositories
+    you want to load modules from, and formats them into a PERL5LIB
+    environment variable format.
+
+    Devel::Local takes a list of Perl module repositories that you specify
+    in your current directory or your home directory. It adds the absolute
+    paths of the lib/ subdirectories to the current value of PERL5LIB. It
+    can also add the bin/ subdirectories to your PATH environment variable.
+    It prints the new value to STDOUT and then exits.
+
+    NOTE: If Devel::Local runs into problems, it will warn about them, but
+    still print your environment variable.
+
+USAGE
+    Create a file called "~/.perl-devel-local" that has lines like this:
+
+        # Use the GitHub versions of these:
+        ~/src/yaml-libyaml-pm/
+        ~/src/catalyst-runtime/
+
+    for generic values, or a file called "./devel-runtime" that looks like
+    this:
+
+        # Use the GitHub versions of these:
+        ../yaml-libyaml-pm/
+        ../catalyst-runtime/
+
+    for project specific values.
+
+    You may also use any other config file path you wish, by setting the
+    "PERL_DEVEL_LOCAL" environment variable.
+
+    NOTE: Devel::Local will ignore all the lines in the config file after
+    the first blank line. This way, you can put several groupings of devel
+    libraries in one file. Just make sure that the grouping you want to use
+    is at the top of the file.
+
+BASH
+    You may want to put a function like this one in your .bashec file:
+
+        function devel-local() {
+            export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
+            export PATH=`perl -MDevel::Local=PATH`
+        }
+
+    Then any time you want to use Devel::Local values, you can just run:
+
+        > devel-local
+
+    from the command line. That's all you need to do!
+
+AUTHOR
+    Ingy döt Net <ingy@cpan.org>
+
+COPYRIGHT AND LICENSE
+    Copyright (c) 2011. Ingy döt Net.
+
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
+
+    See http://www.perl.com/perl/misc/Artistic.html
+
