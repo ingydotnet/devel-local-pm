@@ -45,7 +45,7 @@ USAGE
     is at the top of the file.
 
 BASH
-    You may want to put a function like this one in your .bashec file:
+    You may want to put a function like this one in your .bashrc file:
 
         function devel-local() {
             export PERL5LIB=`perl -MDevel::Local=PERL5LIB`

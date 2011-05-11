@@ -1,4 +1,10 @@
 ---
+version: 0.11
+date:    Wed May 11 11:16:11 EST 2011
+changes:
+- Fixed bug with : at end of PATH
+- Fixed a doc typo
+---
 version: 0.10
 date:    Tue May 10 22:38:27 EST 2011
 changes:

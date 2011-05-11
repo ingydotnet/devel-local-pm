@@ -3,7 +3,7 @@ use 5.008003;
 use strict;
 use warnings;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 
 use Cwd 'abs_path';
 
@@ -38,7 +38,7 @@ Looked for:
     }
     my $locals = read_config($config);
     return $path unless @$locals;
-    $path = [ split ':', $path ];
+    $path = [ split ':', $path, -1 ];
     for my $dir (reverse @$locals) {
         my $add =
             ($name eq 'PATH' and -d "$dir/bin") ? "$dir/bin" :
@@ -132,7 +132,7 @@ the file.
 
 =head1 BASH
 
-You may want to put a function like this one in your .bashec file:
+You may want to put a function like this one in your .bashrc file:
 
     function devel-local() {
         export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
