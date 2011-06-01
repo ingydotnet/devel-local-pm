@@ -1,3 +1,4 @@
+- Print $PERL5LIB and $PATH after setting them
 - Read from a named file
 - Maybe change interface
 - Look at ylib.pm
