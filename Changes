@@ -1,4 +1,11 @@
 ---
+version: 0.12
+date:    Sun Jun  5 13:04:10 EST 2011
+changes:
+- Work on documentation
+- Allow 'use Devel::Local' without die-ing.
+- Use Stardoc and Module::Package
+---
 version: 0.11
 date:    Wed May 11 11:16:11 EST 2011
 changes:

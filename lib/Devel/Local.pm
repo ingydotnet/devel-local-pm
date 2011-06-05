@@ -1,18 +1,28 @@
+##
+# name:      Devel::Local
+# abstract:  Use development modules in place
+# author:    Ingy döt Net
+# license:   perl
+# copyright: 2011
+
 package Devel::Local;
 use 5.008003;
 use strict;
 use warnings;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 use Cwd 'abs_path';
 
 sub import {
-    die "Devel::Local must be used with a single argument of 'PERL5LIB' or 'PATH'"
-        unless @_ == 2 and
-        $_[1] =~ /^(PERL5LIB|PATH)$/;
-    print process($_[1]);
-    exit;
+    my ($package, $command, @args) = @_;
+    if ($command) {
+        if ($command =~ /^(PERL5LIB|PATH)$/) {
+            print process($command, @args);
+            exit;
+        }
+        die "Unknown Devel::Local command '$command'";
+    }
 }
 
 sub process {
@@ -79,13 +89,9 @@ sub read_config {
 
 1;
 
-=encoding utf8
-
-=head1 NAME
-
-Devel::Local - Use development versions of other modules
-
 =head1 SYNOPSIS
+
+From the command line:
 
     > export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
     > export PATH=`perl -MDevel::Local=PATH`
@@ -114,7 +120,7 @@ Create a file called C<~/.perl-devel-local> that has lines like this:
     ~/src/yaml-libyaml-pm/
     ~/src/catalyst-runtime/
 
-for generic values, or a file called C<./devel-runtime> that looks like this:
+for generic values, or a file called C<./.devel-local> that looks like this:
 
     # Use the GitHub versions of these:
     ../yaml-libyaml-pm/
@@ -137,6 +143,8 @@ You may want to put a function like this one in your .bashrc file:
     function devel-local() {
         export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
         export PATH=`perl -MDevel::Local=PATH`
+        echo "PERL5LIB=$PERL5LIB"
+        echo "PATH=$PATH"
     }
 
 Then any time you want to use Devel::Local values, you can just run:
@@ -144,18 +152,3 @@ Then any time you want to use Devel::Local values, you can just run:
     > devel-local
 
 from the command line. That's all you need to do!
-
-=head1 AUTHOR
-
-Ingy döt Net <ingy@cpan.org>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (c) 2011. Ingy döt Net.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
-See http://www.perl.com/perl/misc/Artistic.html
-
-=cut

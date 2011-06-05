@@ -1,7 +1,9 @@
 NAME
-    Devel::Local - Use development versions of other modules
+    Devel::Local - Use development modules in place
 
 SYNOPSIS
+    From the command line:
+
         > export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
         > export PATH=`perl -MDevel::Local=PATH`
 
@@ -27,7 +29,7 @@ USAGE
         ~/src/yaml-libyaml-pm/
         ~/src/catalyst-runtime/
 
-    for generic values, or a file called "./devel-runtime" that looks like
+    for generic values, or a file called "./.devel-local" that looks like
     this:
 
         # Use the GitHub versions of these:
@@ -50,6 +52,8 @@ BASH
         function devel-local() {
             export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
             export PATH=`perl -MDevel::Local=PATH`
+            echo "PERL5LIB=$PERL5LIB"
+            echo "PATH=$PATH"
         }
 
     Then any time you want to use Devel::Local values, you can just run:
@@ -59,7 +63,7 @@ BASH
     from the command line. That's all you need to do!
 
 AUTHOR
-    Ingy döt Net <ingy@cpan.org>
+    Ingy döt Net
 
 COPYRIGHT AND LICENSE
     Copyright (c) 2011. Ingy döt Net.
