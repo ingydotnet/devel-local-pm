@@ -1,3 +1,7 @@
++ Look at ylib.pm
+- Add blib in addition to lib
 - Read from a named file
-- Maybe change interface
-- Look at ylib.pm
+- Used named directories
+- Pretty print the path
+- Include . by default
+- Add devel-local.sh to share

@@ -2,27 +2,65 @@ NAME
     Devel::Local - Use development modules in place
 
 SYNOPSIS
-    From the command line:
+    Devel::Local sets up your Perl development environment with the PERL5LIB
+    and PATH variables that you want.
 
-        > export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
-        > export PATH=`perl -MDevel::Local=PATH`
+    There are several ways to use Devel::Local. In your Perl code you can do
+    just that:
+
+        use Devel::Local;
+
+    When you run a Perl program you can do this:
+
+        > perl -MDevel::Local program.pl
+
+    To use it with many Perl programs:
+
+        > export PERL5OPT='-MDevel::Local'
+        > perl program1.pl
+        > perl program2.pl
+
+    To set up your environment with Devel::Local:
+
+        > export PERL5LIB=`perl -MDevel::Local::PERL5LIB`
+        > export PATH=`perl -MDevel::Local::PATH`
+
+    The handiest way to use Devel::Local is to add this line to your
+    .bashrc:
+
+        source `which devel-local.sh`
+
+    Then you'll have the "devel-local" Bash function to turn things on
+    whenever you need them:
+
+        > devel-local
+        > devel-local src/path
+        > devel-local file/path
+
+    See USAGE below from more details.
 
 DESCRIPTION
-    Sometimes when you are developing software there can several module code
-    repositories involved. This module lets you specify which repositories
-    you want to load modules from, and formats them into a PERL5LIB
-    environment variable format.
+    Sometimes when you are developing Perl software there can several Perl
+    module code repositories involved. This module lets you specify which
+    repositories you want to load Perl modules from, and formats them into a
+    PERL5LIB environment variable format.
 
     Devel::Local takes a list of Perl module repositories that you specify
-    in your current directory or your home directory. It adds the absolute
-    paths of the lib/ subdirectories to the current value of PERL5LIB. It
-    can also add the bin/ subdirectories to your PATH environment variable.
-    It prints the new value to STDOUT and then exits.
+    in your current directory or your home directory. It adds the lib/
+    subdirectories to the current value of PERL5LIB, and it also adds the
+    bin/ subdirectories to your PATH environment variable.
 
-    NOTE: If Devel::Local runs into problems, it will warn about them, but
-    still print your environment variable.
+    In addition to keeping a list of paths in specially named files, you can
+    name a specific list file or name specific paths containing lib and bin
+    dirs.
+
+    Devel::Local always converts the paths to absolute forms, so switching
+    directories should break them.
 
 USAGE
+    As was pointed out in the SYNOPSIS above, TMTOWTDI. There are many ways
+    to set up and use Devel
+
     Create a file called "~/.perl-devel-local" that has lines like this:
 
         # Use the GitHub versions of these:
@@ -61,6 +99,11 @@ BASH
         > devel-local
 
     from the command line. That's all you need to do!
+
+SEE ALSO
+    *   File::Share
+
+    *   ylib
 
 AUTHOR
     Ingy döt Net
