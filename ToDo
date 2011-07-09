@@ -1,7 +1,7 @@
 + Look at ylib.pm
-- Add blib in addition to lib
-- Read from a named file
-- Used named directories
-- Pretty print the path
-- Include . by default
-- Add devel-local.sh to share
++ Add blib in addition to lib
++ Read from a named file
++ Used named directories
++ Pretty print the path
+x Include . by default
++ Add devel-local.sh to share

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pod= <<=cut
+<<=cut
 
 =encoding utf8
 
@@ -36,6 +36,6 @@ See http://www.perl.com/perl/misc/Artistic.html
 
 function devel-local() {
     perl -MDevel::Local -e1 || exit
-    export PERL5LIB=`perl -MDevel::Local::PERL5LIB $*`
-    export PATH=`perl -MDevel::Local::PATH $*`
+    export PERL5LIB=`perl -MDevel::Local::PERL5LIB -e1 $* || echo $PATH`
+    export PATH=`perl -MDevel::Local::PATH -e1 $* || echo $PATH`
 }

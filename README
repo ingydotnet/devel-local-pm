@@ -1,5 +1,5 @@
 NAME
-    Devel::Local - Use development modules in place
+    Devel::Local - Use development code in place
 
 SYNOPSIS
     Devel::Local sets up your Perl development environment with the PERL5LIB
@@ -10,7 +10,7 @@ SYNOPSIS
 
         use Devel::Local;
 
-    When you run a Perl program you can do this:
+    Or when you run a Perl program you can do this:
 
         > perl -MDevel::Local program.pl
 
@@ -30,12 +30,10 @@ SYNOPSIS
 
         source `which devel-local.sh`
 
-    Then you'll have the "devel-local" Bash function to turn things on
-    whenever you need them:
+    Then you'll have the "devel-local" Bash function to set up your
+    environment whenever you need to:
 
         > devel-local
-        > devel-local src/path
-        > devel-local file/path
 
     See USAGE below from more details.
 
@@ -48,62 +46,93 @@ DESCRIPTION
     Devel::Local takes a list of Perl module repositories that you specify
     in your current directory or your home directory. It adds the lib/
     subdirectories to the current value of PERL5LIB, and it also adds the
-    bin/ subdirectories to your PATH environment variable.
+    bin/ subdirectories to your PATH environment variable. You can use
+    absolute paths, relative paths and even type-globs.
 
     In addition to keeping a list of paths in specially named files, you can
     name a specific list file or name specific paths containing lib and bin
     dirs.
 
     Devel::Local always converts the paths to absolute forms, so switching
-    directories should break them.
+    directories should not break the behavior.
 
 USAGE
-    As was pointed out in the SYNOPSIS above, TMTOWTDI. There are many ways
-    to set up and use Devel
+    As was pointed out in the SYNOPSIS above, there are several ways to
+    invoke Devel::Local. In each of those forms, you have several ways to
+    indicate your paths of interest:
 
-    Create a file called "~/.perl-devel-local" that has lines like this:
+    $HOME/.perl-devel-local
+        Create a file called "~/.perl-devel-local" that has lines like this:
 
-        # Use the GitHub versions of these:
-        ~/src/yaml-libyaml-pm/
-        ~/src/catalyst-runtime/
+            # Use the GitHub versions of these:
+            .
+            ~/src/yaml-libyaml-pm/
+            ~/src/catalyst-*
 
-    for generic values, or a file called "./.devel-local" that looks like
-    this:
+    ./.devel-local
+        Create a file called "./.devel-local" that looks like this:
 
-        # Use the GitHub versions of these:
-        ../yaml-libyaml-pm/
-        ../catalyst-runtime/
+            # Use the GitHub versions of these:
+            .
+            ../yaml-libyaml-pm/
+            ../catalyst-*
 
-    for project specific values.
+    $PERL_DEVEL_LOCAL
+        You may also use any other config file path you wish, by setting the
+        "PERL_DEVEL_LOCAL" environment variable.
 
-    You may also use any other config file path you wish, by setting the
-    "PERL_DEVEL_LOCAL" environment variable.
+        NOTE: Devel::Local will ignore all the lines in these config files
+        after the first blank line. This way, you can put several groupings
+        of devel libraries in one file. Just make sure that the grouping you
+        want to use is at the top of the file.
 
-    NOTE: Devel::Local will ignore all the lines in the config file after
-    the first blank line. This way, you can put several groupings of devel
-    libraries in one file. Just make sure that the grouping you want to use
-    is at the top of the file.
+    Specify Config File
+        You can specify the config file directly:
 
-BASH
-    You may want to put a function like this one in your .bashrc file:
+            use Devel::Local /path/to/devel-local-conf
 
-        function devel-local() {
-            export PERL5LIB=`perl -MDevel::Local=PERL5LIB`
-            export PATH=`perl -MDevel::Local=PATH`
-            echo "PERL5LIB=$PERL5LIB"
-            echo "PATH=$PATH"
-        }
+        or:
 
-    Then any time you want to use Devel::Local values, you can just run:
+            > devel-local /path/to/devel-local-conf
 
-        > devel-local
+    List of Paths
+        You can list paths directly:
 
-    from the command line. That's all you need to do!
+            use Devel::Local qw(.  ../yaml-libyaml-pm/ ../catalyst-*);
+
+        or:
+
+            > devel-local .  ../yaml-libyaml-pm/ ../catalyst-*
+
+XS AND BLIB
+    You can use Devel::Local with modules that are not pure Perl. In other
+    words, modules that get compiled before installing.
+
+    The trick is to run "make" (or equivalent) in the appropriate
+    directories so that things get compiled into "blib/" before using
+    Devel::Local. If Devel::Local sees a "blib/" subdirectory it will use
+    that instead of "lib".
+
+DISPLAY $PATH AND $PERL5LIB
+    Whenever you use the "devel-local" bash function, it will pretty print
+    the values. If you just want to see the values listed without modifying
+    them, do this:
+
+        > devel-local ?
+
+TURNING Devel::Local OFF
+    Devel::Local puts a special delimiter, '|', in the PATH variables, so
+    that it can later remove the things it added. You can trigger this by
+    passing it a single argument of '!'.
+
+        > devel::local      # Add stuff to $PATH and $PERL5LIB
+        > devel::local path/foo path/bar-*  # Add more stuff
+        > devel::local !    # Reset to original values
 
 SEE ALSO
-    *   File::Share
-
     *   ylib
+
+    *   File::Share
 
 AUTHOR
     Ingy döt Net

@@ -1,4 +1,12 @@
 ---
+version: 0.13
+date:    
+changes:
+- Major rewrite/refactor
+- Devel::Local::PERL5LIB and Devel::Local::PATH
+- Allow 'use Devel::Local'
+- Allow arguments
+---
 version: 0.12
 date:    Sun Jun  5 13:04:10 EST 2011
 changes:
