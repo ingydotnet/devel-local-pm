@@ -8,7 +8,7 @@
 package Devel::Local::PERL5LIB;
 use strict;
 
-use Devel::Local;
+use Devel::Local ();
 
 sub import {
     Devel::Local::print_path('PERL5LIB', @ARGV);

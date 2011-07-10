@@ -5,13 +5,16 @@
 # license:   perl
 # copyright: 2011
 # see:
-# - ylib
 # - File::Share
+# - ylib
+# - local::lib
 
 use 5.8.3;
 package Devel::Local;
 use strict;
 use warnings;
+
+# use XXX;
 
 our $VERSION = '0.13';
 
@@ -34,7 +37,7 @@ sub print_path {
         if (not $ENV{PERL_DEVEL_LOCAL_QUIET}) {
             warn "${name}:\n";
             for (@path) {
-                warn /^\|$/ ? "\n" : "    $_\n";
+                warn "    $_\n";
             }
             warn "\n";
         }
@@ -44,8 +47,12 @@ sub print_path {
 
 sub get_path {
     my ($name, @args) = @_;
+    my $cmd = '';
     if (not @args) {
         @args = get_config_file();
+    }
+    elsif (@args == 1 and $args[0] =~ /^[\!\?]$/) {
+        $cmd = shift @args;
     }
     my (@left, @right, $found);
     map {
@@ -58,21 +65,22 @@ sub get_path {
         else {
             unshift @right, $_;
         }
-    } reverse(($ENV{$name}) ? split($path_sep, $ENV{$name}, -1) : ());
-    if (@args == 1) {
-        if ($args[0] eq '!') {
-            return @right;
-        }
-        if ($args[0] eq '?') {
-            return(@left, '|', @right);
-        }
+    } reverse(($ENV{$name})
+        ? grep($_, split($path_sep, $ENV{$name}, -1))
+        : ()
+    );
+    if ($cmd eq '!') {
+        return @right;
+    }
+    if ($cmd eq '?') {
+        return scalar(@left) ? (@left, '|', @right) : (@right);
     }
     
     my @locals = get_locals(@args);
     for my $dir (reverse @locals) {
         add_to_path($name, $dir, \@left);
     }
-    return(@left, '|', @right);
+    return scalar(@left) ? (@left, '|', @right) : (@right);
 }
 
 sub get_config_file {
@@ -87,11 +95,11 @@ sub get_config_file {
 
 sub get_locals {
     return map {
-        s!^~/!$ENV{HOME}/! if defined $ENV{HOME};
         s!([\\/])/+!$1!g;
         s!(.)/$!$1!;
         abs_path($_);
     } grep {
+        s!^~/!$ENV{HOME}/! if defined $ENV{HOME};
         -d $_;
     } map {
         -f($_) ? map { /\*/ ? glob($_) : $_ } read_config($_) :
@@ -112,7 +120,18 @@ sub add_to_path {
         ($name eq 'PATH' and -d $bin) ? $bin :
         '';
     return unless $add;
-    @$path = ($add, grep(not(m!^\Q$add\E[\\/]?$!), @$path));
+    @$path = (
+        $add,
+        grep(
+            {
+                (my $badd = $add) =~
+                    s!/(blib|lib)$!$1 eq 'lib' ? '/blib' : '/lib'!e;
+                not(m!^\Q$add\E[\\/]?$!) and
+                not(m!^\Q$badd\E[\\/]?$!);
+            }
+            @$path
+        )
+    );
 }
 
 sub read_config {
@@ -135,7 +154,10 @@ sub read_config {
 =head1 SYNOPSIS
 
 Devel::Local sets up your Perl development environment with the PERL5LIB and
-PATH variables that you want.
+PATH variables that you want. This lets you write and test code in several
+interdependent repositories at once, without needing to install anything after
+changing it. It is similar to L<local::lib> but easier to use, and simlar to
+ylib but more complete.
 
 There are several ways to use Devel::Local. In your Perl code you can do just
 that:
@@ -247,7 +269,8 @@ or:
 
 =head1 XS AND BLIB
 
-You can use Devel::Local with modules that are not pure Perl. In other words, modules that get compiled before installing.
+You can use Devel::Local with modules that are not pure Perl. In other words,
+modules that get compiled before installing.
 
 The trick is to run C<make> (or equivalent) in the appropriate directories so
 that things get compiled into C<blib/> before using Devel::Local. If

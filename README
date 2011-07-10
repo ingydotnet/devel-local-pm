@@ -3,7 +3,10 @@ NAME
 
 SYNOPSIS
     Devel::Local sets up your Perl development environment with the PERL5LIB
-    and PATH variables that you want.
+    and PATH variables that you want. This lets you write and test code in
+    several interdependent repositories at once, without needing to install
+    anything after changing it. It is similar to local::lib but easier to
+    use, and simlar to ylib but more complete.
 
     There are several ways to use Devel::Local. In your Perl code you can do
     just that:
@@ -130,9 +133,11 @@ TURNING Devel::Local OFF
         > devel::local !    # Reset to original values
 
 SEE ALSO
+    *   File::Share
+
     *   ylib
 
-    *   File::Share
+    *   local::lib
 
 AUTHOR
     Ingy döt Net
