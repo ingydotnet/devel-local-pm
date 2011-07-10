@@ -1,11 +1,7 @@
-# Test these usages:
-#
-#     use Devel::Local;
-#     use Devel::Local qw(path/foo path/bar);
-
-use Test::More tests => 6;
+use Test::More tests => 11;
 use t::Test;
 
+my $home = cwd;
 chdir 't' or die;
 my $t = cwd;
 
@@ -35,27 +31,34 @@ test("perl -MDevel::Local::ENVVAR ...",
     $expected_perl5lib,
 );
 
-# set_env_min();
-# test($label,
-#     sub {
-#         eval "use Devel::Local 't/ccc'; 1" or die $@;
-#         (($ENV{PERL5LIB} = join $sep, @INC)) =~ s/(?<=\:\|):.*//;
-#     },
-#     $expected_path,
-#     $expected_perl5lib,
-# );
+chdir $home or die;
+set_env_min();
+{
+    local $ENV{HOME} = $t;
+    test('use Devel::Local; # With $HOME/.perl-devel-local',
+        sub {
+            eval "use Devel::Local; 1" or die $@;
+            (($ENV{PERL5LIB} = join $sep, @INC)) =~ s/(?<=\:\|):.*//;
+        },
+        join($sep, "$t/bbb/bin", '|', $ENV{PATH}),
+        join($sep, "$t/ccc/lib", '|'),
+    );
+}
 
-# test(
-#     sub {
-#     },
-# 
-# {
-#     local $ENV{PATH} = $_path . $sep;
-#     my $PATH3 = `$^X -MDevel::Local::PATH`;
-#     is $PATH3, "$t/aaa/bin:$t/bbb/bin:$_path$sep", "PATH works when it ends with $sep";
-# 
-# }
+set_env_min();
+my $path1 = $ENV{PATH};
+test("use Devel::Local 't/*';",
+    sub {
+        $ENV{PATH} = `$^X -Ilib -MDevel::Local::PATH -e1 't/*'`;
+        $ENV{PERL5LIB} = `$^X -Ilib -MDevel::Local::PERL5LIB -e1 't/*'`;
+    },
+    $expected_path,
+    $expected_perl5lib,
+);
+eval "use Devel::Local '!'; 1" or die $@;
+is $ENV{PATH}, $path1, 'PATH reset works';
 
+#------------------------------------------------------------------------------#
 sub test {
     my ($label, $callback, $expected_path, $expected_perl5lib) = @_;
     $ENV{PERL_DEVEL_LOCAL_QUIET} = 1;
@@ -64,4 +67,3 @@ sub test {
     is $ENV{PATH}, $expected_path, "$label - PATH works";
     is $ENV{PERL5LIB}, $expected_perl5lib, "$label - PERL5LIB works";
 }
-

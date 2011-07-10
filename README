@@ -33,7 +33,7 @@ SYNOPSIS
     Then you'll have the "devel-local" Bash function to set up your
     environment whenever you need to:
 
-        > devel-local
+        > devel-local [optional-arguments]
 
     See USAGE below from more details.
 

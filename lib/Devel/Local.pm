@@ -164,7 +164,7 @@ The handiest way to use Devel::Local is to add this line to your .bashrc:
 Then you'll have the C<devel-local> Bash function to set up your environment
 whenever you need to:
 
-    > devel-local
+    > devel-local [optional-arguments]
 
 See L<USAGE> below from more details.
 
