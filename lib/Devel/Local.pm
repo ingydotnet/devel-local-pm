@@ -16,7 +16,7 @@ use warnings;
 
 # use XXX;
 
-our $VERSION = '0.13';
+our $VERSION = '0.14';
 
 use Cwd 'abs_path';
 use Config;
@@ -85,7 +85,7 @@ sub get_path {
 
 sub get_config_file {
     my $home_file = File::Spec->catfile($ENV{HOME}, '.perl-devel-local');
-    my $dot_file = File::Spec->catfile(File::Spec->curdir, '.devel-local');
+    my $dot_file = File::Spec->catfile(File::Spec->curdir, 'devel-local');
     return
         $ENV{PERL_DEVEL_LOCAL} ? $ENV{PERL_DEVEL_LOCAL} :
         (-f $dot_file) ? $dot_file :
@@ -226,9 +226,9 @@ Create a file called C<~/.perl-devel-local> that has lines like this:
     ~/src/yaml-libyaml-pm/
     ~/src/catalyst-*
 
-=item ./.devel-local
+=item ./devel-local
 
-Create a file called C<./.devel-local> that looks like this:
+Create a file called C<./devel-local> that looks like this:
 
     # Use the GitHub versions of these:
     .

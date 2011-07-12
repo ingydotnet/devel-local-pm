@@ -1,4 +1,9 @@
 ---
+version: 0.14
+date:    Tue Jul 12 11:28:14 CDT 2011
+changes:
+- Switch ./.devel-local to more obvious ./devel-local
+---
 version: 0.13
 date:    Sun Jul 10 01:09:23 EDT 2011
 changes:

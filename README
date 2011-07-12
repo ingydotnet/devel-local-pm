@@ -72,8 +72,8 @@ USAGE
             ~/src/yaml-libyaml-pm/
             ~/src/catalyst-*
 
-    ./.devel-local
-        Create a file called "./.devel-local" that looks like this:
+    ./devel-local
+        Create a file called "./devel-local" that looks like this:
 
             # Use the GitHub versions of these:
             .
