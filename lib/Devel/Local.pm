@@ -16,11 +16,12 @@ use warnings;
 
 # use XXX;
 
-our $VERSION = '0.14';
+our $VERSION = '0.15';
 
 use Cwd 'abs_path';
 use Config;
 use File::Spec;
+use File::Find;
 
 my $path_sep = $Config::Config{'path_sep'};
 
@@ -110,28 +111,39 @@ sub get_locals {
 
 sub add_to_path {
     my ($name, $dir, $path) = @_;
-    my $blib = File::Spec->catfile($dir, 'blib');
-    my $lib = File::Spec->catfile($dir, 'lib');
     my $bin = File::Spec->catfile($dir, 'bin');
-    my $add =
-        ($name eq 'PERL5LIB' and -d $lib) ? (
-            -d $blib ? $blib : -d $lib ? $lib : ''
-        ) :
-        ($name eq 'PATH' and -d $bin) ? $bin :
-        '';
-    return unless $add;
+    my $lib = File::Spec->catfile($dir, 'lib');
+    my $blib = File::Spec->catfile($dir, 'blib');
+    my @add;
+    if ($name eq 'PERL5LIB' and -d $lib) {
+        push @add, $lib;
+        if (has_xs($dir)) {
+            push @add, $blib;
+        }
+    }
+    elsif ($name eq 'PATH' and -d $bin) {
+        push @add, $bin;
+    }
+    return unless @add;
     @$path = (
-        $add,
-        grep(
-            {
-                (my $badd = $add) =~
-                    s!/(blib|lib)$!$1 eq 'lib' ? '/blib' : '/lib'!e;
-                not(m!^\Q$add\E[\\/]?$!) and
-                not(m!^\Q$badd\E[\\/]?$!);
-            }
-            @$path
-        )
+        @add,
+        grep {
+            not(
+                ($name eq 'PERL5LIB' and ($_ eq $lib or $_ eq $blib)) or
+                ($name eq 'PATH' and ($_ eq $bin))
+            )
+        } @$path
     );
+    return;
+}
+
+sub has_xs {
+    my $dir = shift;
+    my @xs;
+    File::Find::find sub {
+        push @xs, $_ if /\.xs$/;
+    }, $dir;
+    return scalar @xs;
 }
 
 sub read_config {
@@ -272,9 +284,11 @@ or:
 You can use Devel::Local with modules that are not pure Perl. In other words,
 modules that get compiled before installing.
 
-The trick is to run C<make> (or equivalent) in the appropriate directories so
-that things get compiled into C<blib/> before using Devel::Local. If
-Devel::Local sees a C<blib/> subdirectory it will use that instead of C<lib>.
+If Devel::Local sees a C<.xs> file anywhere in the dist, it will add C<blib/>
+to the C<PERL5LIB> after <lib/>.
+
+It is up to you to run C<make> after changing your .xs code, so that the
+changes get added to your C<blib/>.
 
 =head1 DISPLAY $PATH AND $PERL5LIB
 

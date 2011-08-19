@@ -1,4 +1,10 @@
 ---
+version: 0.15
+date:    Fri Aug 19 15:30:37 EEST 2011
+changes:
+- Always add lib if present
+- Only add blib if there is an .xs file in the dist dir.
+---
 version: 0.14
 date:    Tue Jul 12 11:28:14 CDT 2011
 changes:

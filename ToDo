@@ -1,3 +1,5 @@
+- Only use blib if there is XS
+
 + Look at ylib.pm
 + Add blib in addition to lib
 + Read from a named file

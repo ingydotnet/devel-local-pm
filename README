@@ -111,10 +111,11 @@ XS AND BLIB
     You can use Devel::Local with modules that are not pure Perl. In other
     words, modules that get compiled before installing.
 
-    The trick is to run "make" (or equivalent) in the appropriate
-    directories so that things get compiled into "blib/" before using
-    Devel::Local. If Devel::Local sees a "blib/" subdirectory it will use
-    that instead of "lib".
+    If Devel::Local sees a ".xs" file anywhere in the dist, it will add
+    "blib/" to the "PERL5LIB" after <lib/>.
+
+    It is up to you to run "make" after changing your .xs code, so that the
+    changes get added to your "blib/".
 
 DISPLAY $PATH AND $PERL5LIB
     Whenever you use the "devel-local" bash function, it will pretty print
