@@ -25,8 +25,16 @@ use File::Find;
 
 my $path_sep = $Config::Config{'path_sep'};
 
+use XXX;
+
 sub import {
     my ($package, @args) = @_;
+    if ((caller(0))[1] =~ /^-e?$/ and
+        @args == 1 and $args[0] =~ /^(PATH|PERL5LIB)$/
+    ) {
+        Devel::Local::print_path($args[0], @ARGV);
+        exit 0;
+    }
     unshift @INC, get_path('PERL5LIB', @args);
     $ENV{PATH} = join $path_sep, get_path('PATH', @args);
 }

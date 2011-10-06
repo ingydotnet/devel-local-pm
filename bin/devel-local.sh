@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# You can set this to the absolute path of the perl where Devel::Local is
+# installed, if you switch perls a lot (with perlbrew or such) and you want
+# devel-local to still work.
+PERL=perl
+
 <<=cut
 
 =encoding utf8
@@ -35,7 +40,10 @@ See http://www.perl.com/perl/misc/Artistic.html
 =cut
 
 function devel-local() {
-    perl -MDevel::Local -e1 || exit
-    export PERL5LIB=`perl -MDevel::Local::PERL5LIB -e1 $* || echo $PATH`
-    export PATH=`perl -MDevel::Local::PATH -e1 $* || echo $PATH`
+    if [ `$PERL -e 'eval {require Devel::Local; print "ok"}'` ]; then
+        export PERL5LIB=`$PERL -MDevel::Local=PERL5LIB -e1 $* || echo $PERL5LIB`
+        export PATH=`$PERL -MDevel::Local=PATH -e1 $* || echo $PATH`
+    else
+        echo Devel::Local not installed.
+    fi
 }
