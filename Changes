@@ -1,4 +1,11 @@
 ---
+version: 0.16
+date:    Thu Oct  6 11:32:14 EDT 2011
+changes:
+- Semi major refactor.
+- Default of devel-local is pretty-print
+- Refactor doc to put simple stuff first.
+---
 version: 0.15
 date:    Fri Aug 19 15:30:37 EEST 2011
 changes:

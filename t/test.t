@@ -24,8 +24,8 @@ do {
 set_env_min();
 test("perl -MDevel::Local::ENVVAR ...",
     sub {
-        $ENV{PATH} = `$^X -I../lib -MDevel::Local=PATH`;
-        $ENV{PERL5LIB} = `$^X -I../lib -MDevel::Local=PERL5LIB`;
+        $ENV{PATH} = `$^X -I../lib -MDevel::Local=PATH -e1 ~`;
+        $ENV{PERL5LIB} = `$^X -I../lib -MDevel::Local=PERL5LIB -e1 ~`;
     },
     $expected_path,
     $expected_perl5lib,

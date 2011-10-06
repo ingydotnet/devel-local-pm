@@ -16,7 +16,7 @@ use warnings;
 
 # use XXX;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 use Cwd 'abs_path';
 use Config;
@@ -25,13 +25,13 @@ use File::Find;
 
 my $path_sep = $Config::Config{'path_sep'};
 
-use XXX;
-
 sub import {
     my ($package, @args) = @_;
     if ((caller(0))[1] =~ /^-e?$/ and
         @args == 1 and $args[0] =~ /^(PATH|PERL5LIB)$/
     ) {
+        @ARGV = ('?') if not @ARGV;
+        @ARGV = () if $ARGV[0] eq $ENV{HOME};
         Devel::Local::print_path($args[0], @ARGV);
         exit 0;
     }
@@ -42,16 +42,14 @@ sub import {
 sub print_path {
     my ($name, @args) = @_;
     my @path = get_path($name, @args);
-    if (@path) {
-        if (not $ENV{PERL_DEVEL_LOCAL_QUIET}) {
-            warn "${name}:\n";
-            for (@path) {
-                warn "    $_\n";
-            }
-            warn "\n";
+    if (not $ENV{PERL_DEVEL_LOCAL_QUIET}) {
+        warn "${name}:\n";
+        for (@path) {
+            warn "    $_\n";
         }
-        print join $path_sep, @path;
+        warn "\n";
     }
+    print join $path_sep, @path;
 }
 
 sub get_path {
@@ -173,42 +171,20 @@ sub read_config {
 
 =head1 SYNOPSIS
 
-Devel::Local sets up your Perl development environment with the PERL5LIB and
-PATH variables that you want. This lets you write and test code in several
-interdependent repositories at once, without needing to install anything after
-changing it. It is similar to L<local::lib> but easier to use, and simlar to
-ylib but more complete.
+From the command line:
 
-There are several ways to use Devel::Local. In your Perl code you can do just
-that:
+    > devel-local dir/path      # Add dir/path/lib to PERL5LIB
+                                # and dir/path/bin to PATH
+    > devel-local file/path     # Apply a Devel::Local config file
+    > devel-local .             # Add current dir's lib/ and bin/
+    > devel-local ../*          # Add all your source repos at once!
+    > devel-local ~             # Apply ~/.perl-devel-local config file
+    > devel-local ?             # Pretty print $PERL5LIB and $PATH
+    > devel-local !             # Reset $PERL5LIB and $PATH to original
+    > devel-local               # Default action (pretty print)
 
-    use Devel::Local;
-
-Or when you run a Perl program you can do this:
-
-    > perl -MDevel::Local program.pl
-
-To use it with many Perl programs:
-
-    > export PERL5OPT='-MDevel::Local'
-    > perl program1.pl
-    > perl program2.pl
-
-To set up your environment with Devel::Local:
-
-    > export PERL5LIB=`perl -MDevel::Local::PERL5LIB`
-    > export PATH=`perl -MDevel::Local::PATH`
-
-The handiest way to use Devel::Local is to add this line to your .bashrc:
-
-    source `which devel-local.sh`
-
-Then you'll have the C<devel-local> Bash function to set up your environment
-whenever you need to:
-
-    > devel-local [optional-arguments]
-
-See L<USAGE> below from more details.
+Using this command line tool is the simplest way to do it, but TMTOWTDI. See
+L<USAGE> for more ways.
 
 =head1 DESCRIPTION
 
@@ -223,37 +199,68 @@ the current value of PERL5LIB, and it also adds the bin/ subdirectories to
 your PATH environment variable. You can use absolute paths, relative paths and
 even type-globs.
 
-In addition to keeping a list of paths in specially named files, you can name
-a specific list file or name specific paths containing lib and bin dirs.
+In addition to keeping a list of paths in specially named files, you can
+request a specific list file or name specific paths containing lib and bin
+dirs.
 
 Devel::Local always converts the paths to absolute forms, so switching
 directories should not break the behavior.
 
+Finally, Devel::Local can reset the PERL5LIB and PATH variables to their
+original state.
+
 =head1 USAGE
 
 As was pointed out in the L<SYNOPSIS> above, there are several ways to invoke
-Devel::Local. In each of those forms, you have several ways to indicate your
-paths of interest:
+Devel::Local.
+
+The handiest way to use Devel::Local is to add this line to your .bashrc:
+
+    source `which devel-local.sh`
+
+Then you'll have the C<devel-local> Bash function to set up your environment
+whenever you need to:
+
+    > devel-local [optional-arguments]
+
+If you don't use Bash for your shell, use an option below or considering
+contacting me to add support for your shell.
+
+The explicit way to use Devel::Local from the command line is thus:
+
+    export PERL5LIB=`$PERL -MDevel::Local=PERL5LIB -e1 <arguments>`
+    export PATH=`$PERL -MDevel::Local=PATH -e1 <arguments>`
+
+This is actually what the C<devel-local> script does internally.
+
+Finally you can use Devel::Local from inside your code like thus:
+
+    use Devel::Local <arguments>;
+
+This will modify $ENV{PERL5LIB} and $ENV{PATH} appropriately.
+
+For each of the above forms there are different arguments you can specify:
 
 =over
 
-=item $HOME/.perl-devel-local
+=item Devel::Local config files
 
-Create a file called C<~/.perl-devel-local> that has lines like this:
+If you don't give C<use Devel::Local> any arguments it will search for one of
+these files:
+
+    ./devel-local
+    ./.devel-local
+    ~/.perl-devel-local
+
+that has lines like this:
 
     # Use the GitHub versions of these:
     .
     ~/src/yaml-libyaml-pm/
     ~/src/catalyst-*
 
-=item ./devel-local
-
-Create a file called C<./devel-local> that looks like this:
-
-    # Use the GitHub versions of these:
-    .
-    ../yaml-libyaml-pm/
-    ../catalyst-*
+You can also put a file of the above format anywhere, and just specify its
+path.
 
 =item $PERL_DEVEL_LOCAL
 
@@ -264,28 +271,6 @@ NOTE: Devel::Local will ignore all the lines in these config files after the
 first blank line. This way, you can put several groupings of devel libraries
 in one file. Just make sure that the grouping you want to use is at the top of
 the file.
-
-=item Specify Config File
-
-You can specify the config file directly:
-
-    use Devel::Local /path/to/devel-local-conf
-
-or:
-
-    > devel-local /path/to/devel-local-conf
-
-=item List of Paths
-
-You can list paths directly:
-
-    use Devel::Local qw(.  ../yaml-libyaml-pm/ ../catalyst-*);
-
-or:
-
-    > devel-local .  ../yaml-libyaml-pm/ ../catalyst-*
-
-=back
 
 =head1 XS AND BLIB
 

@@ -2,43 +2,20 @@ NAME
     Devel::Local - Use development code in place
 
 SYNOPSIS
-    Devel::Local sets up your Perl development environment with the PERL5LIB
-    and PATH variables that you want. This lets you write and test code in
-    several interdependent repositories at once, without needing to install
-    anything after changing it. It is similar to local::lib but easier to
-    use, and simlar to ylib but more complete.
+    From the command line:
 
-    There are several ways to use Devel::Local. In your Perl code you can do
-    just that:
+        > devel-local dir/path      # Add dir/path/lib to PERL5LIB
+                                    # and dir/path/bin to PATH
+        > devel-local file/path     # Apply a Devel::Local config file
+        > devel-local .             # Add current dir's lib/ and bin/
+        > devel-local ../*          # Add all your source repos at once!
+        > devel-local ~             # Apply ~/.perl-devel-local config file
+        > devel-local ?             # Pretty print $PERL5LIB and $PATH
+        > devel-local !             # Reset $PERL5LIB and $PATH to original
+        > devel-local               # Default action (pretty print)
 
-        use Devel::Local;
-
-    Or when you run a Perl program you can do this:
-
-        > perl -MDevel::Local program.pl
-
-    To use it with many Perl programs:
-
-        > export PERL5OPT='-MDevel::Local'
-        > perl program1.pl
-        > perl program2.pl
-
-    To set up your environment with Devel::Local:
-
-        > export PERL5LIB=`perl -MDevel::Local::PERL5LIB`
-        > export PATH=`perl -MDevel::Local::PATH`
-
-    The handiest way to use Devel::Local is to add this line to your
-    .bashrc:
-
-        source `which devel-local.sh`
-
-    Then you'll have the "devel-local" Bash function to set up your
-    environment whenever you need to:
-
-        > devel-local [optional-arguments]
-
-    See USAGE below from more details.
+    Using this command line tool is the simplest way to do it, but TMTOWTDI.
+    See USAGE for more ways.
 
 DESCRIPTION
     Sometimes when you are developing Perl software there can several Perl
@@ -53,32 +30,65 @@ DESCRIPTION
     absolute paths, relative paths and even type-globs.
 
     In addition to keeping a list of paths in specially named files, you can
-    name a specific list file or name specific paths containing lib and bin
-    dirs.
+    request a specific list file or name specific paths containing lib and
+    bin dirs.
 
     Devel::Local always converts the paths to absolute forms, so switching
     directories should not break the behavior.
 
+    Finally, Devel::Local can reset the PERL5LIB and PATH variables to their
+    original state.
+
 USAGE
     As was pointed out in the SYNOPSIS above, there are several ways to
-    invoke Devel::Local. In each of those forms, you have several ways to
-    indicate your paths of interest:
+    invoke Devel::Local.
 
-    $HOME/.perl-devel-local
-        Create a file called "~/.perl-devel-local" that has lines like this:
+    The handiest way to use Devel::Local is to add this line to your
+    .bashrc:
+
+        source `which devel-local.sh`
+
+    Then you'll have the "devel-local" Bash function to set up your
+    environment whenever you need to:
+
+        > devel-local [optional-arguments]
+
+    If you don't use Bash for your shell, use an option below or considering
+    contacting me to add support for your shell.
+
+    The explicit way to use Devel::Local from the command line is thus:
+
+        export PERL5LIB=`$PERL -MDevel::Local=PERL5LIB -e1 <arguments>`
+        export PATH=`$PERL -MDevel::Local=PATH -e1 <arguments>`
+
+    This is actually what the "devel-local" script does internally.
+
+    Finally you can use Devel::Local from inside your code like thus:
+
+        use Devel::Local <arguments>;
+
+    This will modify $ENV{PERL5LIB} and $ENV{PATH} appropriately.
+
+    For each of the above forms there are different arguments you can
+    specify:
+
+    Devel::Local config files
+        If you don't give "use Devel::Local" any arguments it will search
+        for one of these files:
+
+            ./devel-local
+            ./.devel-local
+            ~/.perl-devel-local
+
+        that has lines like this:
 
             # Use the GitHub versions of these:
             .
             ~/src/yaml-libyaml-pm/
             ~/src/catalyst-*
 
-    ./devel-local
-        Create a file called "./devel-local" that looks like this:
-
-            # Use the GitHub versions of these:
-            .
-            ../yaml-libyaml-pm/
-            ../catalyst-*
+        You can also put a file of the above format anywhere, and just
+        specify its path.
 
     $PERL_DEVEL_LOCAL
         You may also use any other config file path you wish, by setting the
@@ -88,24 +98,6 @@ USAGE
         after the first blank line. This way, you can put several groupings
         of devel libraries in one file. Just make sure that the grouping you
         want to use is at the top of the file.
-
-    Specify Config File
-        You can specify the config file directly:
-
-            use Devel::Local /path/to/devel-local-conf
-
-        or:
-
-            > devel-local /path/to/devel-local-conf
-
-    List of Paths
-        You can list paths directly:
-
-            use Devel::Local qw(.  ../yaml-libyaml-pm/ ../catalyst-*);
-
-        or:
-
-            > devel-local .  ../yaml-libyaml-pm/ ../catalyst-*
 
 XS AND BLIB
     You can use Devel::Local with modules that are not pure Perl. In other
@@ -150,4 +142,11 @@ COPYRIGHT AND LICENSE
     under the same terms as Perl itself.
 
     See http://www.perl.com/perl/misc/Artistic.html
+
+POD ERRORS
+    Hey! The above document had some coding errors, which are explained
+    below:
+
+    Around line 110:
+        You forgot a '=back' before '=head1'
 
