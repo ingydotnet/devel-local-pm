@@ -1,4 +1,4 @@
-package t::Test;
+package Test;
 use strict;
 use warnings;
 

@@ -1,14 +1,7 @@
-##
-# name:      Devel::Local::PERL5LIB 
-# abstract:  Set PERL5LIB with Devel::Local
-# author:    Ingy döt Net
-# license:   perl
-# copyright: 2011
-
+use strict; use warnings;
 package Devel::Local::PERL5LIB;
-use strict;
 
-use Devel::Local ();
+use Devel::Local();
 
 sub import {
     Devel::Local::print_path('PERL5LIB', @ARGV);

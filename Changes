@@ -1,4 +1,16 @@
 ---
+version: 0.17
+date:    Wed Aug 13 16:16:53 PDT 2014
+changes:
+- Switch to Zilla::Dist
+---
+version: 0.16
+date:    Thu Oct  6 11:32:14 EDT 2011
+changes:
+- Semi major refactor.
+- Default of devel-local is pretty-print
+- Refactor doc to put simple stuff first.
+---
 version: 0.15
 date:    Fri Aug 19 15:30:37 EEST 2011
 changes:
@@ -30,7 +42,7 @@ changes:
 version: 0.11
 date:    Wed May 11 11:16:11 EST 2011
 changes:
-- Fixed bug with : at end of PATH
+- Fixed bug with ':' at end of PATH
 - Fixed a doc typo
 ---
 version: 0.10
