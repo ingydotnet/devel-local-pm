@@ -1,6 +1,6 @@
 use strict; use warnings;
 package Devel::Local;
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 use Cwd 'abs_path';
 use Config;
