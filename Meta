@@ -1,32 +1,28 @@
-=meta: 0.0.1
+=meta: 0.0.2
 
 name: Devel-Local
-version: 0.19
+version: 0.20
 abstract: Use Development Code in Place
 homepage: https://metacpan.org/release/Devel-Local
-
+language: perl
 license: perl
-copyright: 2011-2014. Your Name.
+copyright: 2011-2014
+
 author:
   name: Ingy döt Net
   email: ingy@cpan.org
+  homepage: http://ingy.net
   github: ingydotnet
   twitter: ingydotnet
   freenode: ingy
-  homepage: http://ingy.net
-
-requires:
-  perl: 5.8.1
-
-test:
-  generate:
-    000-require-modules.t: true
 
 devel:
   git: https://github.com/ingydotnet/devel-local-pm
   bug: https://github.com/ingydotnet/devel-local-pm/issues
   irc: irc.freenode.net#pkg
 
-=travis:
-  type: perl
-  irc: irc.freenode.net#pkg
+requires:
+  perl: 5.8.1
+
+=zild:
+  test-000: require

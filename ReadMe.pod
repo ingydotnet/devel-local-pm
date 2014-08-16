@@ -130,7 +130,7 @@ or:
 
 =back
 
-=head1 XS AND `BLIB`
+=head1 XS AND C<BLIB>
 
 You can use Devel::Local with modules that are not pure Perl. In other words,
 modules that get compiled before installing.
@@ -141,7 +141,7 @@ to the C<PERL5LIB> after <lib/>.
 It is up to you to run C<make> after changing your .xs code, so that the
 changes get added to your C<blib/>.
 
-=head1 DISPLAY `$PATH` AND `$PERL5LIB`
+=head1 DISPLAY C<$PATH> AND C<$PERL5LIB>
 
 Whenever you use the C<devel-local> bash function, it will pretty print
 the values. If you just want to see the values listed without modifying
@@ -149,7 +149,7 @@ them, do this:
 
     > devel-local ?
 
-=head1 TURNING `DEVEL::LOCAL` OFF
+=head1 TURNING C<DEVEL::LOCAL> OFF
 
 Devel::Local puts a special delimiter, '|', in the PATH variables, so that it
 can later remove the things it added. You can trigger this by passing it a
