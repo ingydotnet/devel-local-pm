@@ -51,8 +51,8 @@ set_env_min();
 my $path1 = $ENV{PATH};
 test("use Devel::Local '$t/*';",
     sub {
-        $ENV{PATH} = `$^X -Ilib -MDevel::Local::PATH -e1 '$t/*'`;
-        $ENV{PERL5LIB} = `$^X -Ilib -MDevel::Local::PERL5LIB -e1 '$t/*'`;
+        $ENV{PATH} = `$^X -I../lib -MDevel::Local::PATH -e1 '$t/*'`;
+        $ENV{PERL5LIB} = `$^X -I../lib -MDevel::Local::PERL5LIB -e1 '$t/*'`;
     },
     $expected_path,
     $expected_perl5lib,

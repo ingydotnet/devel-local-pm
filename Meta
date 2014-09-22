@@ -1,7 +1,7 @@
 =meta: 0.0.2
 
 name: Devel-Local
-version: 0.21
+version: 0.22
 abstract: Use Development Code in Place
 homepage: https://metacpan.org/release/Devel-Local
 language: perl
